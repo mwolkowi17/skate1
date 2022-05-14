@@ -1,6 +1,9 @@
-import { createRoot } from 'react-dom/client'
-import React, { useRef, useState } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+
+import React, { Suspense} from 'react'
+import { Canvas,useFrame} from '@react-three/fiber'
+import { OrbitControls, Html } from '@react-three/drei'
+import { Park } from './Park_loader'
+import { useRef, useState } from 'react'
 
 function Box(props) {
   // This reference will give us direct access to the mesh
@@ -25,13 +28,22 @@ function Box(props) {
   )
 }
 
-export default function App(){
-  return(
-  <Canvas>
-    <ambientLight />
-    <pointLight position={[10, 10, 10]} />
-    <Box position={[-1.2, 0, 0]} />
-    <Box position={[1.2, 0, 0]} />
-  </Canvas>
+export default function App() {
+  function Loader() {
+    return <Html center style={{ color: 'black' }}>loading...</Html>
+  }
+
+  return (
+
+    <Canvas camera={{ fov: 75, near: 0.1, far: 80, position: [0, 0, 0] }}>
+      <OrbitControls
+        maxPolarAngle={Math.PI / 2}
+        maxDistance={40}
+      />
+      <Suspense fallback={<Loader />}>
+        <ambientLight />
+        <Box position={[-1.2, 0, 0]} />
+      </Suspense>
+    </Canvas>
   )
 }
